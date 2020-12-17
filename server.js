@@ -1,8 +1,12 @@
 require("dotenv").config();
 const express = require("express");
+const connectToDB = require("./database/db");
 
 // Initialize the app
 const app = express();
+
+//connect to database
+connectToDB();
 
 //enable our app to parse JSON
 app.use(express.json());
