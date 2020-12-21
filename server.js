@@ -2,6 +2,12 @@ require("dotenv").config();
 const express = require("express");
 const connectToDB = require("./database/db");
 
+process.on("uncaughtException", (error) => {
+    console.log("Uncaught Exception! 🔥 💣 stopping the server...");
+    console.log(error.name, error.message);
+    process.exit(1);
+});
+
 // Initialize the app
 const app = express();
 
@@ -22,9 +28,19 @@ app.get("/", (req, res) => {
 });
 
 // We want our server to listen on our declared PORT variable
-app.listen(
+const server = app.listen(
     PORT,
     console.log(
         `Server running in ${process.env.NODE_ENV} mode on port ${PORT}`
     )
 );
+
+process.on("unhandledRejection", (error) => {
+    console.log("Unhandled Rejection... 💣 🔥 stopping the server....");
+    console.log(error.name, error.message);
+    server.close(() => {
+        //exit code 1 means there is an issue that caused
+        // the program to exit.
+        process.exit(1);
+    });
+});
