@@ -7,13 +7,16 @@
     "author": "Ogilo <alphaogilo@gmail.com>",
     "license": "MIT",
     "scripts": {
-      "start": "node server.js",
-      "dev":"nodemon server.js"
+        "start": "node server.js",
+        "dev": "nodemon server.js"
     },
     "dependencies": {
+        "bcryptjs": "^2.4.3",
         "dotenv": "^8.2.0",
         "express": "^4.17.1",
-        "mongoose": "^5.11.8"
+        "jsonwebtoken": "^8.5.1",
+        "mongoose": "^5.11.8",
+        "validator": "^13.5.2"
     },
     "devDependencies": {
         "eslint": "^7.15.0",
@@ -24,6 +27,7 @@
         "eslint-plugin-node": "^11.1.0",
         "eslint-plugin-prettier": "^3.3.0",
         "eslint-plugin-react": "^7.21.5",
+        "eslint-plugin-react-hooks": "^4.2.0",
         "nodemon": "^2.0.6",
         "prettier": "^2.2.1"
     },
@@ -31,6 +35,6 @@
         "tabWidth": 4
     },
     "engines": {
-        "node": ">=14.15.3"
+        "node": ">=14.13.0"
     }
 }
