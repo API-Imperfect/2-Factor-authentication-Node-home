@@ -26,7 +26,7 @@ const UserSchema = new mongoose.Schema({
         type: String,
         required: [true, "Please confirm your password"],
         validate: {
-            //lets make sure validator only works on CREATE and SAVE
+            //lvalidator will only work on CREATE and SAVE
             validator: function (pass) {
                 return pass === this.password;
             },
@@ -37,7 +37,7 @@ const UserSchema = new mongoose.Schema({
 
 // Password Encryption & hash with pre hook
 UserSchema.pre("save", async function (next) {
-    // if password is modified, that when you return this function
+    // if password is modified, that's when you return this function
     if (!this.isModified("password")) return next();
 
     const salt = await bcrypt.genSalt(10);

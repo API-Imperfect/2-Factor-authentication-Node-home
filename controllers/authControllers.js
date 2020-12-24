@@ -1,5 +1,4 @@
 const User = require("../models/User");
-const TwoFactorError = require("../utils/twoFactorError");
 const AsyncManager = require("../utils/asyncManager");
 
 const cookieTokenResponse = (user, statusCode, res) => {
@@ -15,12 +14,10 @@ const cookieTokenResponse = (user, statusCode, res) => {
         cookieOptions.secure = true;
     }
 
-    res.cookie("facade", token, cookieOptions);
-
     //remove the password from the output
     user.password = undefined;
 
-    res.status(statusCode).json({
+    res.status(statusCode).cookie("facade", token, cookieOptions).json({
         status: "success",
         token,
         data: {

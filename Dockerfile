@@ -1,8 +1,6 @@
 #specify a base image from dockerhub
 FROM node:14-alpine3.10
 
-ENV MONGO_DB_USERNAME=admin \
-    MONGO_DB_PASSWORD=admin123456
 
 # all other commands will be executed relative to this directory
 # our code will live here
