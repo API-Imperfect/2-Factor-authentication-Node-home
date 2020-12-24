@@ -1,6 +1,8 @@
 require("dotenv").config();
 const express = require("express");
 const connectToDB = require("./database/db");
+const ErrorsMiddleware = require("./middleware/mongooseErrorHandler");
+const authRoutes = require("./routes/authRoutes");
 
 process.on("uncaughtException", (error) => {
     console.log("Uncaught Exception! 🔥 💣 stopping the server...");
@@ -26,6 +28,10 @@ app.get("/", (req, res) => {
         Hi: "Welcome to the NodeJS 2FA App",
     });
 });
+app.use("/api/v1/", authRoutes);
+
+// Error middleware
+app.use(ErrorsMiddleware);
 
 // We want our server to listen on our declared PORT variable
 const server = app.listen(

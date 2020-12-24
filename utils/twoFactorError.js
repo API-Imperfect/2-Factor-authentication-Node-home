@@ -7,8 +7,6 @@ class TwoFactorError extends Error {
             ? "Client Error"
             : "Server Error";
         this.isOperational = true;
-
-        Error.captureStackTrace(this, this.constructor);
     }
 }
 
