@@ -19,7 +19,7 @@ const cookieTokenResponse = (user, statusCode, res) => {
     user.password = undefined;
 
     res.status(statusCode).cookie("facade", token, cookieOptions).json({
-        status: "success",
+        message: "success",
         token,
         data: {
             user,
@@ -65,3 +65,14 @@ exports.loginUser = AsyncManager(async (req, res, next) => {
 
     cookieTokenResponse(user, 200, res);
 });
+
+// $-title   Logout User/clear cookie
+// $-path    POST /api/v1/auth/logout
+// $-auth    Public
+exports.logoutUser = (req, res) => {
+    res.cookie("facade", "loggedout", {
+        expires: new Date(Date.now() + 10 * 1000),
+        httpOnly: true,
+    });
+    res.status(200).json({ message: "success" });
+};
