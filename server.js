@@ -1,5 +1,6 @@
 require("dotenv").config();
 const express = require("express");
+const cookieParser = require("cookie-parser");
 const connectToDB = require("./database/db");
 const ErrorsMiddleware = require("./middleware/mongooseErrorHandler");
 const authRoutes = require("./routes/authRoutes");
@@ -18,6 +19,10 @@ connectToDB();
 
 //enable our app to parse JSON
 app.use(express.json());
+
+//jwt in cookie will be available
+// through request.cookies
+app.use(cookieParser());
 
 // declare our PORT
 const PORT = process.env.PORT || 5000;

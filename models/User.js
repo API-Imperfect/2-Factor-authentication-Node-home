@@ -56,7 +56,7 @@ UserSchema.methods.signJwtToken = function () {
 };
 
 // match user password to hashed password in DB
-UserSchema.methods.matchPasswords = async function (userPassword) {
+UserSchema.methods.correctPassword = async function (userPassword) {
     return await bcrypt.compare(userPassword, this.password);
 };
 
