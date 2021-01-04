@@ -21,7 +21,7 @@ connectToDB();
 app.use(express.json());
 
 //jwt in cookie will be available
-// through request.cookies
+// through req.cookies
 app.use(cookieParser());
 
 // declare our PORT
@@ -30,10 +30,11 @@ const PORT = process.env.PORT || 5000;
 // Mount/Create Routes
 app.get("/", (req, res) => {
     res.json({
-        Hi: "Welcome to the NodeJS 2FA App",
+        Hi: "Welcome to the NodeJS 2FA App"
     });
 });
-app.use("/api/v1/", authRoutes);
+
+app.use("/api/v1", authRoutes);
 
 // Error middleware
 app.use(ErrorsMiddleware);

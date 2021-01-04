@@ -26,13 +26,17 @@ const UserSchema = new mongoose.Schema({
         type: String,
         required: [true, "Please confirm your password"],
         validate: {
-            //lvalidator will only work on CREATE and SAVE
+            //validator will only work on CREATE and SAVE
             validator: function (pass) {
                 return pass === this.password;
             },
             message: "Passwords are not the same",
         },
     },
+    //to store the value of the auth code
+    twoFactorAuthCode: String,
+    // boolean flag to enable or disable two factor auth
+    twoFactorAuthEnabled: Boolean,
 });
 
 // Password Encryption & hash with pre hook
@@ -49,10 +53,14 @@ UserSchema.pre("save", async function (next) {
 });
 
 // Sign token
-UserSchema.methods.signJwtToken = function () {
-    return jwt.sign({ id: this._id }, process.env.JWT_SECRET_KEY, {
-        expiresIn: process.env.JWT_EXPIRES_IN,
-    });
+UserSchema.methods.signJwtToken = function (is2FAuthenticated = false) {
+    return jwt.sign(
+        { id: this._id, is2FAuthenticated },
+        process.env.JWT_SECRET_KEY,
+        {
+            expiresIn: process.env.JWT_EXPIRES_IN,
+        }
+    );
 };
 
 // match user password to hashed password in DB
