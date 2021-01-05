@@ -21,6 +21,9 @@ const cookieTokenResponse = (user, statusCode, res) => {
     //remove the password from the output
     user.password = undefined;
 
+    //remove twoFactorAuthCode from the output
+    user.twoFactorAuthCode = undefined;
+
     res.status(statusCode).cookie("facade", token, cookieOptions).json({
         message: "success",
         token,
@@ -33,7 +36,7 @@ const cookieTokenResponse = (user, statusCode, res) => {
 // generate Speakeasy Secret Code
 const generateSpeakeasySecretCode = () => {
     const secretCode = speakeasy.generateSecret({
-        name: process.env.TWO_FACTOR_AUTH_APP_NAME,
+        name: process.env.TWO_FACTOR_APP_NAME,
     });
     return {
         otpauthUrl: secretCode.otpauth_url,
@@ -57,7 +60,28 @@ exports.generate2FACode = async (req, res) => {
     returnQRCode(otpauthUrl, res);
 };
 
-
+//turn on and verify 2 FA Code,return new token
+exports.verify2FACode = async (req, res, next) => {
+    const { token } = req.body;
+    const cookieToken = req.cookies.facade;
+    const decoded = jwt.verify(cookieToken, process.env.JWT_SECRET_KEY);
+    const user = await User.findById(decoded.id);
+    const verified = speakeasy.totp.verify({
+        secret: user.twoFactorAuthCode,
+        encoding: "base32",
+        token,
+    });
+    if (verified) {
+        await User.findOneAndUpdate(decoded.id, {
+            twoFactorAuthEnabled: true,
+        });
+        cookieTokenResponse(user, 200, res);
+    } else {
+        res.json({
+            verified: false,
+        });
+    }
+};
 
 // $-title   Register User
 // $-path    POST /api/v1/register
@@ -95,7 +119,14 @@ exports.loginUser = AsyncManager(async (req, res, next) => {
         return next(new TwoFactorError("Incorrect email or password", 401));
     }
 
-    cookieTokenResponse(user, 200, res);
+    //check if 2 factor is turned on or not
+    if (user.twoFactorAuthEnabled) {
+        res.send({
+            twoFactorAuthEnabled: true,
+        });
+    } else {
+        cookieTokenResponse(user, 200, res);
+    }
 });
 
 // $-title   Logout User/clear cookie

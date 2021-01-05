@@ -36,7 +36,7 @@ const UserSchema = new mongoose.Schema({
     //to store the value of the auth code
     twoFactorAuthCode: String,
     // boolean flag to enable or disable two factor auth
-    twoFactorAuthEnabled: Boolean,
+    twoFactorAuthEnabled: { type: Boolean, default: false },
 });
 
 // Password Encryption & hash with pre hook
